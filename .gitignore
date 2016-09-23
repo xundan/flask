@@ -94,4 +94,4 @@ ENV/
 # temporary files
 wxBot/temp/
 wxBot/*.txt
-static/temp/
+static/temp/*

@@ -9,6 +9,8 @@ from flask import request
 from flask import url_for, flash
 from models import User
 from wxBot.testBot import MyWXBot
+import threading
+from time import ctime,sleep
 
 app = Flask(__name__)
 app.secret_key = '123'
@@ -41,14 +43,35 @@ def login():
         return render_template("index.html", content='nothing')
 
 
-@app.route('/login01')
-def login01():
-    # print "now start wxbot by flask"
-    # bot = MyWXBot()
-    # bot.DEBUG = True
-    # bot.run()
-    png_path = url_for("static",filename="temp/wxqr.png")
-    print "They never come here."+png_path
+def login_wx(wx_id):
+    print "now start wxbot by flask with: "+wx_id
+    bot = MyWXBot()
+    bot.DEBUG = True
+    bot.run()
+    # png_path = url_for("static",filename="temp/wxqr.png")
+    # print "They never come here."+png_path
+    # return render_template("qr_png.html", png_path=png_path)
+
+
+@app.route('/show01')
+def show_png01():
+    a_thread = threading.Thread(target=login_wx, args=('cjkzy001',))
+    a_thread.setDaemon(True)
+    a_thread.start()
+    sleep(2)
+    png_path = url_for("static", filename="temp/wxqr.png")
+    print "They never come here." + png_path
+    return render_template("qr_png.html", png_path=png_path)
+
+
+@app.route('/show03')
+def show_png03():
+    a_thread = threading.Thread(target=login_wx, args=('cjkzy003',))
+    a_thread.setDaemon(True)
+    a_thread.start()
+    sleep(2)
+    png_path = url_for("static", filename="temp/wxqr.png")
+    print "They never come here." + png_path
     return render_template("qr_png.html", png_path=png_path)
 
 
@@ -113,7 +136,7 @@ def query_url():
 
 if __name__ == '__main__':
     config_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "host.ini")
-    print ' * Now loading conf: '+config_file_path
+    print ' * Now loading conf: ' + config_file_path
     localhost = '0.0.0.0'
     try:
         cf = ConfigParser.ConfigParser()
