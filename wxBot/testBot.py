@@ -5,6 +5,10 @@ from wxbot import *
 
 
 class MyWXBot(WXBot):
+    def show_png(self):
+        if self.env == 'ecs':
+            pass
+
     def handle_msg_all(self, msg):
         if msg['msg_type_id'] == 4 and msg['content']['type'] == 0 and msg['content']['data'] == '1':
             # self.send_img_msg_by_uid("img/1.png", msg['user']['id'])
