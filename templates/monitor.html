@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container-fluid" style="margin-top: 70px">
+        <div class="row">
+            <div class="main">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">微信状态实时监控</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-bordered table-hover table-responsive table-striped">
+                                <thead>
+                                <tr>
+                                    <th>微信号</th>
+                                    <th>名称</th>
+                                    <th>状态</th>
+                                    <th>登录</th>
+                                    <th>登出</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for wx in wxs %}
+                                    <tr>
+                                        <td>{{ wx.wx_id }}</td>
+                                        <td>{{ wx.wx_name }}</td>
+                                        <td><a href="/monitor">{{ wx.wx_status }}</a></td>
+                                        <td><a href="/monitor">登录</a>
+                                        </td>
+                                        <td><a href="/monitor">退出</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -5,6 +5,7 @@ from wxbot import *
 
 
 class MyWXBot(WXBot):
+
     def show_png(self):
         if self.env == 'ecs':
             pass

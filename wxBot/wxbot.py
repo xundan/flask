@@ -59,7 +59,8 @@ class SafeSession(requests.Session):
 class WXBot:
     """WXBot功能类"""
 
-    def __init__(self):
+    def __init__(self, wx_id='default'):
+        self.wx_id = wx_id
         self.DEBUG = False
         self.uuid = ''
         self.base_uri = ''
@@ -83,7 +84,7 @@ class WXBot:
 
         # 根据不同的环境设置不同的目录，ini文件与服务器上形成区别
         config_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "conf.ini")
-        print ' * Now loading conf: '+config_file_path
+        print self.wx_id+' * Now loading conf: '+config_file_path
         self.temp_pwd = '/alidata/www/flask/wxBot/temp'
         self.env = ''
         try:
@@ -1073,7 +1074,7 @@ class WXBot:
                 self.base_uri = redirect_uri[:redirect_uri.rfind('/')]
                 return code
             elif code == TIMEOUT:
-                print '[ERROR] WeChat login timeout. retry in %s secs later...' % (try_later_secs,)
+                print self.wx_id+'[ERROR] WeChat login timeout. retry in %s secs later...' % (try_later_secs,)
 
                 tip = 1  # 重置
                 retry_time -= 1

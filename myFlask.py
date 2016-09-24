@@ -7,10 +7,11 @@ from flask import abort
 from flask import render_template
 from flask import request
 from flask import url_for, flash
-from models import User
+from models import User, Wx
 from wxBot.testBot import MyWXBot
 import threading
 from time import ctime,sleep
+from threadPool import ThreadPool
 
 app = Flask(__name__)
 app.secret_key = '123'
@@ -18,34 +19,26 @@ app.secret_key = '123'
 
 @app.route('/')
 def hello_world():
-    content = 'Hello content!'
-    flash('hello flash')
-    return render_template('index.html', content=content)
+    return monitor()
 
 
-@app.route('/login', methods=['POST'])
-def login():
-    form = request.form
-    user_name = form.get('user_name')
-    password = form.get('password')
-    if not user_name:
-        flash("Please input your name.")
-        return render_template("index.html", content='nothing')
-    if not password:
-        flash("Please input your password.")
-        return render_template("index.html", content='nothing')
+@app.route('/monitor')
+def monitor():
+    wxs=[]
+    for i in range(1, 11):
+        wx = Wx('cjkzy' + str(i), 'cjkzy' + str(i), 'OK')
+        wxs.append(wx)
+    return render_template('monitor.html', wxs=wxs)
 
-    if user_name == 'xcl' and password == 'xcl':
-        flash("Login successfully.")
-        return render_template("son2_base.html")
-    else:
-        flash("Login failed")
-        return render_template("index.html", content='nothing')
+
+@app.route('/manual_service')
+def manual_service():
+    return render_template('manual_service.html')
 
 
 def login_wx(wx_id):
     print "now start wxbot by flask with: "+wx_id
-    bot = MyWXBot()
+    bot = MyWXBot(wx_id)
     bot.DEBUG = True
     bot.run()
     # png_path = url_for("static",filename="temp/wxqr.png")
@@ -80,61 +73,26 @@ def not_found(e):
     return render_template("404.html")
 
 
-@app.route('/user')
-def show_user():
-    user = User(123, 'xcl')
-    return render_template('user.html', user=user)
 
-
-@app.route('/user/<id>')
-def user_id(id):
-    user = None
-    if int(id) == 1:
-        user = User(1, 'xuncl')
-    else:
-        abort(404)
-    return render_template('user_id.html', user=user)
-
-
-@app.route('/users')
-def users():
-    users = []
-    for i in range(1, 11):
-        user = User(i, 'xcl' + str(i))
-        users.append(user)
-    return render_template('users.html', users=users)
-
-
-@app.route('/one')
-def one():
-    return render_template('son_base.html')
-
-
-@app.route('/two')
-def two():
-    return render_template('son2_base.html')
-
-
-@app.route('/user', methods=['POST'])
-def hello_user():
-    return 'Hello user'
-
-
-@app.route('/query_user')
-def query_id():
-    id = request.args.get('id')
-    return 'Hello ' + id
 
 
 # http://127.0.0.1:5000/query_user?id=3
+def init_wxbot_dict():
+    global THREAD_POOL
+    THREAD_POOL = ThreadPool()
+    THREAD_POOL.addTask("cjkzy001",login_wx, args=('cjkzy001',))
+    THREAD_POOL.addTask("cjkzy003",login_wx, args=('cjkzy003',))
 
 
-@app.route('/query_url')
-def query_url():
-    return 'query url:' + url_for('query_id')
-
-
+THREAD_POOL = None
 if __name__ == '__main__':
+    a_thread = threading.Thread(target=init_wxbot_dict)
+    a_thread.setDaemon(True)
+    a_thread.start()
+    # Get host info from 'host.ini'
+    sleep(5)
+    THREAD_POOL.killTask("cjkzy001")
+
     config_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "host.ini")
     print ' * Now loading conf: ' + config_file_path
     localhost = '0.0.0.0'
@@ -146,3 +104,5 @@ if __name__ == '__main__':
         print "[ERROR]Parse host.ini problem:"
         print e
     app.run(localhost)
+
+    # print "Thread is appending here."
