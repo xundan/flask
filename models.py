@@ -9,3 +9,13 @@ class Wx(object):
         self.wx_id = wx_id
         self.wx_name = wx_name
         self.wx_status = wx_status
+
+
+class ManualTodo(object):
+    def __init__(self, todo_id, wx_id, wx_name, user_name, time, status):
+        self.todo_id = todo_id
+        self.wx_id = wx_id
+        self.wx_name = wx_name
+        self.user_name = user_name
+        self.time = time
+        self.status = status

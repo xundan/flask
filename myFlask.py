@@ -7,14 +7,16 @@ from flask import abort
 from flask import render_template
 from flask import request
 from flask import url_for, flash
-from models import User, Wx
+from models import User, Wx, ManualTodo
 from wxBot.testBot import MyWXBot
 import threading
-from time import ctime,sleep
+import time
+from time import ctime, sleep
 from threadPool import ThreadPool
 
 app = Flask(__name__)
 app.secret_key = '123'
+ISO_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 @app.route('/')
@@ -24,7 +26,7 @@ def hello_world():
 
 @app.route('/monitor')
 def monitor():
-    wxs=[]
+    wxs = []
     for i in range(1, 11):
         wx = Wx('cjkzy' + str(i), 'cjkzy' + str(i), 'OK')
         wxs.append(wx)
@@ -33,11 +35,16 @@ def monitor():
 
 @app.route('/manual_service')
 def manual_service():
-    return render_template('manual_service.html')
+    todos = []
+    for i in range(1, 6):
+        todo = ManualTodo(i, 'cjkzy' + str(i), 'cjkzy' + str(i), u'用户' + str(i),
+                          time.strftime(ISO_TIME_FORMAT, time.localtime()), "On")
+        todos.append(todo)
+    return render_template('manual_service.html', todos=todos)
 
 
 def login_wx(wx_id):
-    print "now start wxbot by flask with: "+wx_id
+    print "now start wxbot by flask with: " + wx_id
     bot = MyWXBot(wx_id)
     bot.DEBUG = True
     bot.run()
@@ -73,26 +80,24 @@ def not_found(e):
     return render_template("404.html")
 
 
-
-
-
 # http://127.0.0.1:5000/query_user?id=3
 def init_wxbot_dict():
     global THREAD_POOL
     THREAD_POOL = ThreadPool()
-    THREAD_POOL.addTask("cjkzy001",login_wx, args=('cjkzy001',))
-    THREAD_POOL.addTask("cjkzy003",login_wx, args=('cjkzy003',))
+    THREAD_POOL.addTask("cjkzy001", login_wx, args=('cjkzy001',))
+    THREAD_POOL.addTask("cjkzy003", login_wx, args=('cjkzy003',))
 
 
 THREAD_POOL = None
 if __name__ == '__main__':
-    a_thread = threading.Thread(target=init_wxbot_dict)
-    a_thread.setDaemon(True)
-    a_thread.start()
-    # Get host info from 'host.ini'
-    sleep(5)
-    THREAD_POOL.killTask("cjkzy001")
+    # a_thread = threading.Thread(target=init_wxbot_dict)
+    # a_thread.setDaemon(True)
+    # a_thread.start()
+    # sleep(5)
+    # THREAD_POOL.killTask("cjkzy001")
+    # block the main thread
 
+    # Get host info from 'host.ini'
     config_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "host.ini")
     print ' * Now loading conf: ' + config_file_path
     localhost = '0.0.0.0'

@@ -1,7 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-    <div>
-    <h2>This is page MANUAL SERVICE.</h2>
-
+ <div class="container-fluid" style="margin-top: 70px">
+        <div class="row">
+            <div class="main">
+                <div class="col-md-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">微信状态实时监控</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table table-bordered table-hover table-responsive table-striped">
+                                <thead>
+                                <tr>
+                                    <th>微信号</th>
+                                    <th>名称</th>
+                                    <th>客户名称</th>
+                                    <th>时间</th>
+                                    <th>转人工</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for todo in todos %}
+                                    <tr>
+                                        <td>{{ todo.wx_id }}</td>
+                                        <td>{{ todo.wx_name }}</td>
+                                        <td><a href="/manual_service">{{ todo.user_name }}</a></td>
+                                        <td><a href="/manual_service">{{ todo.time }}</a>
+                                        </td>
+                                        <td><a href="/monitor">{{ todo.status }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
