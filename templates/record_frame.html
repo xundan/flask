@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body bgcolor="#f0f8ff">
+<h4>ID:{{ record.id }}</h4>
+<label>
+    <textarea name="record">{{ record.content }}</textarea>
+</label>
+<form class="input-group" action="/send/{{ record.id }}" method="post">
+{#        {{ form.hidden_tag() }}#}
+{#        {{ form.content(class="form-control") }}#}
+    <span class="input-group-btn">
+        <button class="btn btn-primary" type="submit">发送</button>
+    </span>
+    </form>
+</body>
+</html>

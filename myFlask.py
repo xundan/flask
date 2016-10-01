@@ -7,7 +7,7 @@ from flask import abort
 from flask import render_template
 from flask import request
 from flask import url_for, flash
-from models import User, Wx, ManualTodo
+from models import User, Wx, ManualTodo, Record
 from wxBot.testBot import MyWXBot
 import threading
 import time
@@ -41,6 +41,34 @@ def manual_service():
                           time.strftime(ISO_TIME_FORMAT, time.localtime()), "On")
         todos.append(todo)
     return render_template('manual_service.html', todos=todos)
+
+
+@app.route('/record_frame/<id>')
+def record_frame(id):
+    """show the record panel"""
+    record = None
+    if id == "On":
+        record = Record(id)
+    else:
+        abort(404)
+    return render_template('record_frame.html', record=record)
+
+
+@app.route('/send/<id>', methods=['POST', ])
+def add(id):
+    """commit and show the record panel"""
+    # form = SendingForm(request.form)
+    # if form.validate():
+    #     content = form.content.data
+    #     todo = Sending(content=content)
+    #     todo.save()
+    # todos = Sending.objects.order_by('-time')
+    record = None
+    if id == "On":
+        record = Record(id)
+    else:
+        abort(404)
+    return render_template("record_frame.html", record=record)
 
 
 def login_wx(wx_id):

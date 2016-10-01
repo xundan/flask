@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
- <div class="container-fluid" style="margin-top: 70px">
+    <div class="container-fluid" style="margin-top: 70px">
         <div class="row">
             <div class="main">
                 <div class="col-md-12">
@@ -27,7 +27,12 @@
                                         <td><a href="/manual_service">{{ todo.user_name }}</a></td>
                                         <td><a href="/manual_service">{{ todo.time }}</a>
                                         </td>
-                                        <td><a href="/monitor">{{ todo.status }}</a>
+{#                                        <td><a href="/monitor">{{ todo.status }}</a>#}
+{#                                        <td><input type="button" name="Button" value="{{ todo.status }}"#}
+{#                                                   onclick="document.frames('ifrmname').location.reload()">#}
+{#                                        </td>                                        #}
+                                        <td><input type="button" name="Button" value="Button"
+                                                   onclick="window.open('/record_frame/{{ todo.status }}','ifrmname','')">
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -38,5 +43,7 @@
                 </div>
             </div>
         </div>
+        <iframe src="/record_frame"  width="1400px" height="400px" name="ifrmname" id="ifrmid"></iframe>
     </div>
+
 {% endblock %}
