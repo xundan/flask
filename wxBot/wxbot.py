@@ -121,6 +121,7 @@ class WXBot:
 
         self.img = None
         self.img_path = ''
+        self.manual_list = []  # 待处理的转人工列表
 
     @staticmethod
     def to_unicode(string, encoding='utf-8'):

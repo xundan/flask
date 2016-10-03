@@ -5,6 +5,7 @@ from wxbot import *
 
 
 class MyWXBot(WXBot):
+
     def show_png(self):
         if self.env == 'ecs':
             pass
@@ -59,6 +60,9 @@ class MyWXBot(WXBot):
     # def schedule(self):
     #     self.send_msg(u'荀辰龙', u'schedule')
     #     time.sleep(1)
+
+    def send_msg_via_db(self, name, word):
+        pass
 
     def post_cjkzy_msg(self, msg_content, user_name):
         url = 'http://www.kuaimei56.com/index.php/Views/Raw/messages'

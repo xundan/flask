@@ -54,21 +54,35 @@ def record_frame(id):
     return render_template('record_frame.html', record=record)
 
 
+def send_record(record, content):
+    #  todo send message by pushing content&record.client into get_bot(record.wx_id).queue
+    print "Now i am sending "+content+" to "+record.client_name
+    pass
+
+
+def delete_record(record):
+    #  todo set record invalid in sql
+    print "Now I'm deleting "+record.id
+    pass
+
+
 @app.route('/send/<id>', methods=['POST', ])
 def add(id):
     """commit and show the record panel"""
-    # form = SendingForm(request.form)
-    # if form.validate():
-    #     content = form.content.data
-    #     todo = Sending(content=content)
-    #     todo.save()
-    # todos = Sending.objects.order_by('-time')
     record = None
     if id == "On":
         record = Record(id)
     else:
         abort(404)
-    return render_template("record_frame.html", record=record)
+    form = request.form
+    content = form.get('content')
+    if not content:
+        flash("Manual deleted.")
+        delete_record(record)
+        return render_template("record_frame.html", record=record)
+    else:
+        send_record(record, content)
+        return render_template("record_frame.html", record=record)
 
 
 def login_wx(wx_id):

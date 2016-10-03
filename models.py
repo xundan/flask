@@ -53,6 +53,7 @@ class Record(db.Model):
 
     def __init__(self, id):
         self.id = id
+        self.client_name = "test_client"
         self.content = "would be select from db later"
 
     def __repr__(self):
