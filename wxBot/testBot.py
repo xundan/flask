@@ -57,9 +57,15 @@ class MyWXBot(WXBot):
         if msg['msg_type_id'] == 3 and msg['content']['type'] == 0:
             print '    (group-message): %s' % msg['content']['data']
 
-    # def schedule(self):
-    #     self.send_msg(u'荀辰龙', u'schedule')
-    #     time.sleep(1)
+    def schedule(self):
+        # self.send_msg(u'荀辰龙', u'schedule')
+        # time.sleep(1)
+        # todo here to append manual_list
+        if len(self.manual_list)>0:
+            # todo send_msg here: self.send_msg(u'荀辰龙', u'schedule')
+            pass
+        else:
+            print self.wx_id+" Nothing to send now."
 
     def send_msg_via_db(self, name, word):
         pass

@@ -11,8 +11,7 @@ from models import User, Wx, ManualTodo, Record
 from wxBot.testBot import MyWXBot
 import threading
 import time
-from time import ctime, sleep
-from threadPool import ThreadPool
+from wxThread import WxThreadCollection, DemoThread
 
 app = Flask(__name__)
 app.secret_key = '123'
@@ -97,10 +96,14 @@ def login_wx(wx_id):
 
 @app.route('/show01')
 def show_png01():
-    a_thread = threading.Thread(target=login_wx, args=('cjkzy001',))
-    a_thread.setDaemon(True)
-    a_thread.start()
-    sleep(2)
+    # a_thread = threading.Thread(target=login_wx, args=('cjkzy001',))
+    # a_thread.setDaemon(True)
+    # a_thread.start()
+    # sleep(2)
+    thread = DemoThread(target_func=login_wx, s_args=('cjkzy001',))
+    global THREAD_POOL
+    THREAD_POOL.add(thread)
+
     png_path = url_for("static", filename="temp/wxqr.png")
     print "They never come here." + png_path
     return render_template("qr_png.html", png_path=png_path)
@@ -108,10 +111,9 @@ def show_png01():
 
 @app.route('/show03')
 def show_png03():
-    a_thread = threading.Thread(target=login_wx, args=('cjkzy003',))
-    a_thread.setDaemon(True)
-    a_thread.start()
-    sleep(2)
+    thread = DemoThread(target_func=login_wx, s_args=('cjkzy003',))
+    global THREAD_POOL
+    THREAD_POOL.add(thread)
     png_path = url_for("static", filename="temp/wxqr.png")
     print "They never come here." + png_path
     return render_template("qr_png.html", png_path=png_path)
@@ -125,19 +127,11 @@ def not_found(e):
 # http://127.0.0.1:5000/query_user?id=3
 def init_wxbot_dict():
     global THREAD_POOL
-    THREAD_POOL = ThreadPool()
-    THREAD_POOL.addTask("cjkzy001", login_wx, args=('cjkzy001',))
-    THREAD_POOL.addTask("cjkzy003", login_wx, args=('cjkzy003',))
-
+    THREAD_POOL = WxThreadCollection()
 
 THREAD_POOL = None
 if __name__ == '__main__':
-    # a_thread = threading.Thread(target=init_wxbot_dict)
-    # a_thread.setDaemon(True)
-    # a_thread.start()
-    # sleep(5)
-    # THREAD_POOL.killTask("cjkzy001")
-    # block the main thread
+    init_wxbot_dict()
 
     # Get host info from 'host.ini'
     config_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "host.ini")
