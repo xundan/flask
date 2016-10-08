@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 # coding: utf-8
 
 # from wxbot import *
@@ -28,10 +28,26 @@
 #     main()
 
 
-print "hello"
+# # How can loads(r) **SOMETIMES** throws exception that 'ValueError: No JSON object could be decoded'
+import json
+r = ' {"result_code":"201", "reason":"\u8d85\u7ea7\u77ff\u8d44\u6e90","result":"0","message_id":"s","error_code":"0"}'
+# r = "{'result_code':'201','reason':'s','result':'0','message_id':'s','error_code':'0'}"
+dic = json.loads(r)
+print '    [Response]'
+print '    -----------------------------'
+print '    | result_code: %s' % dic['result_code']
+print '    | reason: %s' % dic['reason']
+print '    | error_code: %s' % dic['error_code']
+print '    | result: %s' % dic['result']
+print '    -----------------------------'
 
+aList = [123, 'xyz', 'fuck', 'abc', {"name":"a"}]
 
-
-
-
+a = aList.pop()
+print a["name"]
+print aList.pop()
+print aList.pop()
+print aList.pop()
+print aList.pop()
+# print aList.pop()
 

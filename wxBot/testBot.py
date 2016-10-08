@@ -5,13 +5,12 @@ from wxbot import *
 
 
 class MyWXBot(WXBot):
-
     def show_png(self):
         if self.env == 'ecs':
             pass
 
     def handle_msg_all(self, msg):
-        if msg['msg_type_id'] == 4 and msg['content']['type'] == 0 and msg['content']['data'] == '1':
+        if msg['msg_type_id'] == 4 and msg['content']['type'] == 0:
             # self.send_img_msg_by_uid("img/1.png", msg['user']['id'])
             # self.send_file_msg_by_uid("img/1.png", msg['user']['id'])
             # try:
@@ -43,7 +42,7 @@ class MyWXBot(WXBot):
                     print s, type(s)
                     if str(s) == 'None':
                         c_string = self.to_unicode('不匹配，转人工')
-                        self.post_chat_record(msg['content'], msg['user']['name'])
+                        self.post_chat_record(msg['content'], msg['user']['name'], 0)
                         print '********[' + c_string + ']********'
                         # self.send_msg_by_uid(u'请您留下手机号', msg['user']['id'])
                     else:
@@ -58,17 +57,62 @@ class MyWXBot(WXBot):
             print '    (group-message): %s' % msg['content']['data']
 
     def schedule(self):
-        # self.send_msg(u'荀辰龙', u'schedule')
-        # time.sleep(1)
-        # todo here to append manual_list
-        if len(self.manual_list)>0:
-            # todo send_msg here: self.send_msg(u'荀辰龙', u'schedule')
-            pass
-        else:
-            print self.wx_id+" Nothing to send now."
+        # here to append manual_list
+        msg2send = self.fetch_msg_to_send()
+        if msg2send is not None:
+            self.manual_list.append(msg2send)
+        time.sleep(5)
 
-    def send_msg_via_db(self, name, word):
-        pass
+        if len(self.manual_list) > 0:
+            message = self.manual_list.pop()
+            self.send_msg(message["name"], message["word"])
+            self.update_chat_msg_sent(message["id"])
+        else:
+            print self.wx_id + " Nothing to send now."
+
+    def fetch_msg_to_send(self):
+        url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/unsent_record'
+        params = {
+            "self_wx": self.wx_id
+        }
+        r = self.session.post(url, data=json.dumps(params))
+        print "r.encoding", r.encoding
+        # r.encoding = 'ISO-8859-1'
+        dic = json.loads(r.text)
+
+        if dic['result_code'] == '201':
+            print '    fetch to be sent[Response]'
+            print '    -----------------------------'
+            print '    | to_send: %s' % dic['name']
+            print '    | word: %s' % dic['word']
+            print '    | result_code: %s' % dic['result_code']
+            print '    | reason: %s' % dic['reason']
+            print '    | error_code: %s' % dic['error_code']
+            print '    -----------------------------'
+
+            message = {"id": dic["message_id"], "name": dic["name"], "word": dic["word"]}
+            return message
+        elif dic['result_code'] == '202':
+            return None
+        print u"[Error] [fetch_msg_to_send] 数据库错误:" + dic['result_code']
+        return None
+
+    def update_chat_msg_sent(self, record_id):
+        url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/status'
+        params = {
+            "id": record_id,
+            "status": 1
+        }
+        r = self.session.post(url, data=json.dumps(params))
+        r.encoding = 'utf-8'
+        dic = json.loads(r.text)
+        print '    [Response]'
+        print '    -----------------------------'
+        print '    | result_code: %s' % dic['result_code']
+        print '    | reason: %s' % dic['reason']
+        print '    | error_code: %s' % dic['error_code']
+        print '    | result: %s' % dic['result']
+        print '    -----------------------------'
 
     def post_cjkzy_msg(self, msg_content, user_name):
         url = 'http://www.kuaimei56.com/index.php/Views/Raw/messages'
@@ -90,13 +134,13 @@ class MyWXBot(WXBot):
         print '    | result: %s' % dic['result']
         print '    -----------------------------'
 
-    def post_chat_record(self, msg_content, user_name):
+    def post_chat_record(self, msg_content, user_name, isme=0):
         url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/record'
         params = {
             "self_wx": self.wx_id,
             "client_name": user_name,
             "content": msg_content['data'],
-            "isme": 0,
+            "isme": isme,
             "type": "plain",
             "remark": "0"
         }

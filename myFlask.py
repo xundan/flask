@@ -89,9 +89,18 @@ def login_wx(wx_id):
     bot = MyWXBot(wx_id)
     bot.DEBUG = True
     bot.run()
-    # png_path = url_for("static",filename="temp/wxqr.png")
-    # print "They never come here."+png_path
-    # return render_template("qr_png.html", png_path=png_path)
+
+
+@app.route('/show/<id>')
+def show(id):
+    """commit and show the record panel"""
+    thread = DemoThread(target_func=login_wx, s_args=(id,))
+    global THREAD_POOL
+    THREAD_POOL.add(thread)
+    time.sleep(5)
+    png_path = url_for("static", filename="temp/wxqr.png")
+    print "They never come here." + png_path
+    return render_template("qr_png.html", png_path=png_path)
 
 
 @app.route('/show01')
@@ -103,17 +112,7 @@ def show_png01():
     thread = DemoThread(target_func=login_wx, s_args=('cjkzy001',))
     global THREAD_POOL
     THREAD_POOL.add(thread)
-
-    png_path = url_for("static", filename="temp/wxqr.png")
-    print "They never come here." + png_path
-    return render_template("qr_png.html", png_path=png_path)
-
-
-@app.route('/show03')
-def show_png03():
-    thread = DemoThread(target_func=login_wx, s_args=('cjkzy003',))
-    global THREAD_POOL
-    THREAD_POOL.add(thread)
+    time.sleep(5)
     png_path = url_for("static", filename="temp/wxqr.png")
     print "They never come here." + png_path
     return render_template("qr_png.html", png_path=png_path)
