@@ -61,7 +61,7 @@ class MyWXBot(WXBot):
         msg2send = self.fetch_msg_to_send()
         if msg2send is not None:
             self.manual_list.append(msg2send)
-        time.sleep(5)
+        time.sleep(2)
 
         if len(self.manual_list) > 0:
             message = self.manual_list.pop()
@@ -76,9 +76,9 @@ class MyWXBot(WXBot):
             "self_wx": self.wx_id
         }
         r = self.session.post(url, data=json.dumps(params))
-        print "r.encoding", r.encoding
-        # r.encoding = 'ISO-8859-1'
-        dic = json.loads(r.text)
+        r.encoding = 'utf-8'
+        json_text = self.delete_bom(r.text)
+        dic = json.loads(json_text)
 
         if dic['result_code'] == '201':
             print '    fetch to be sent[Response]'
@@ -105,7 +105,8 @@ class MyWXBot(WXBot):
         }
         r = self.session.post(url, data=json.dumps(params))
         r.encoding = 'utf-8'
-        dic = json.loads(r.text)
+        json_text = self.delete_bom(r.text)
+        dic = json.loads(json_text)
         print '    [Response]'
         print '    -----------------------------'
         print '    | result_code: %s' % dic['result_code']
@@ -123,7 +124,8 @@ class MyWXBot(WXBot):
         }
         r = self.session.post(url, data=json.dumps(params))
         r.encoding = 'utf-8'
-        dic = json.loads(r.text)
+        json_text = self.delete_bom(r.text)
+        dic = json.loads(json_text)
         print '    [Response]'
         print '    -----------------------------'
         print '    | sender: %s' % user_name
@@ -146,7 +148,8 @@ class MyWXBot(WXBot):
         }
         r = self.session.post(url, data=json.dumps(params))
         r.encoding = 'utf-8'
-        dic = json.loads(r.text)
+        json_text = self.delete_bom(r.text)
+        dic = json.loads(json_text)
         print '    [Response]'
         print '    -----------------------------'
         print '    | client_name: %s' % user_name
@@ -157,12 +160,25 @@ class MyWXBot(WXBot):
         print '    | result: %s' % dic['result']
         print '    -----------------------------'
 
+    @staticmethod
+    def delete_bom(text):
+        """delete the BOM at head of text, if it has one."""
+        if text is not None:
+            while text[0] != "{":
+                text = text[1:]
+        return text
+
 
 def main():
     bot = MyWXBot()
     bot.DEBUG = True
     bot.run()
-
+    # r1 = '﻿{"result_code":"201","reason":"\u83b7\u53d6\u6570\u636e\u6210\u529f"}'
+    # text = bot.delete_bom(r1)
+    # json.loads(text)
+    # r0 = '{"result_code":"201","reason":"\u83b7\u53d6\u6570\u636e\u6210\u529f"}'
+    # text = bot.delete_bom(r0)
+    # json.loads(text)
 
 if __name__ == '__main__':
     main()
