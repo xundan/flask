@@ -1,24 +1,14 @@
-from sqlalchemy import Column, Integer, String, TIMESTAMP, TEXT, func
+import json
+
+import requests
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
+from wxBot.testBot import MyWXBot
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Admin123@localhost/db'
 db = SQLAlchemy(app)
-
-
-class User(db.Model):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50), unique=True)
-    email = Column(String(120), unique=True)
-
-    def __init__(self, name=None, email=None):
-        self.name = name
-        self.email = email
-
-    def __repr__(self):
-        return '<User %r>' % self.name
 
 
 class Wx(object):
@@ -38,24 +28,28 @@ class ManualTodo(object):
         self.status = status
 
 
-class Record(db.Model):
-    __tablename__ = 'records'
-    id = Column(Integer, primary_key=True)
-    self_wx = Column(String(50), unique=False)
-    client_name = Column(String(200), unique=False)
-    content = Column(TEXT, unique=False)
-    is_me = Column(Integer, unique=False)
-    type = Column(String(50), unique=False)
-    remark = Column(String(100), unique=False)
-    record_time = Column(TIMESTAMP, server_default=func.now())
-    status = Column(Integer, unique=False)
-    invalid_id = Column(Integer, unique=False)
-
-    def __init__(self, id):
-        self.id = id
-        self.client_name = "test_client"
-        self.content = "would be select from db later"
+class Record(object):
+    def __init__(self, self_wx, client_name):
+        self.self_wx = self_wx
+        self.client_name = client_name
+        self.content = self.fetch_content()
 
     def __repr__(self):
         return '<Record %r>' % self.content
 
+    def fetch_content(self):
+        url = "http://www.kuaimei56.com/index.php/Views/ChatRecord/distinct_record"
+        params = {
+            "self_wx": self.self_wx,
+            "client_name": self.client_name
+        }
+        print "Record.getContent params:"+json.dumps(params)
+        r = requests.post(url=url, json=params)
+        print "Record.getContent return:"+MyWXBot.delete_bom(r.text)
+        dic = json.loads(MyWXBot.delete_bom(r.text))
+        if dic['result_code'] == '201':
+            return dic['result']
+        elif dic['reult_code'] == '202':
+            return "No more message."
+        else:
+            return "Internal Error."

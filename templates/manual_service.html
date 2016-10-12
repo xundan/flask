@@ -24,15 +24,10 @@
                                     <tr>
                                         <td>{{ todo.wx_id }}</td>
                                         <td>{{ todo.wx_name }}</td>
-                                        <td><a href="/manual_service">{{ todo.user_name }}</a></td>
-                                        <td><a href="/manual_service">{{ todo.time }}</a>
-                                        </td>
-{#                                        <td><a href="/monitor">{{ todo.status }}</a>#}
-{#                                        <td><input type="button" name="Button" value="{{ todo.status }}"#}
-{#                                                   onclick="document.frames('ifrmname').location.reload()">#}
-{#                                        </td>                                        #}
+                                        <td>{{ todo.user_name }}</td>
+                                        <td>{{ todo.time }}</td>
                                         <td><input type="button" name="Button" value="Button"
-                                                   onclick="window.open('/record_frame/{{ todo.status }}','ifrmname','')">
+                                                   onclick="window.open('/record_frame/{{ todo.wx_id }}/{{ todo.user_name }}','ifrmname','')">
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -43,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <iframe src="/record_frame"  width="1400px" height="400px" name="ifrmname" id="ifrmid"></iframe>
+        <iframe src="/record_frame" width="1400px" height="400px" name="ifrmname" id="ifrmid"></iframe>
     </div>
 
 {% endblock %}

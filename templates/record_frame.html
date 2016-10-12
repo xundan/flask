@@ -6,15 +6,11 @@
 </head>
 <body bgcolor="#f0f8ff">
 <h1>{{ get_flashed_messages()[0] }}</h1>
-<h4>ID:{{ record.id }}</h4>
-<label>
-    <textarea name="record">{{ record.content }}</textarea>
-</label>
-<form class="input-group" action="/send/{{ record.id }}" method="post">
-{#        {{ form.hidden_tag() }}#}
-{#        {{ form.content(class="form-control") }}#}
-
-    <input type="text" name="content">
+{{ record.content }}
+<form class="input-group" action="/send/{{ record.self_wx }}/{{ record.client_name }}" method="post">
+    <label>
+        <input type="text" name="content">
+    </label>
     <span class="input-group-btn">
         <button class="btn btn-primary" type="submit">发送</button>
     </span>

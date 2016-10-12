@@ -28,20 +28,21 @@
 #     main()
 
 
-# # How can loads(r) **SOMETIMES** throws exception that 'ValueError: No JSON object could be decoded'
+# How can loads(r) **SOMETIMES** throws exception that 'ValueError: No JSON object could be decoded'
 import json
 
-r0 = '{"result_code":"201","reason":"\u83b7\u53d6\u6570\u636e\u6210\u529f"}'
-r1 = '﻿{"result_code":"201","reason":"\u83b7\u53d6\u6570\u636e\u6210\u529f"}'
+# r0 = '{"result_code":"201","reason":"\u83b7\u53d6\u6570\u636e\u6210\u529f"}'
+# r1 = '﻿{"result_code":"201","reason":"\u83b7\u53d6\u6570\u636e\u6210\u529f"}'
+# json.loads(r0)
+# print "-"*20
+# json.loads(r1)
+from wxBot.testBot import MyWXBot
 
-# r = "{'result_code':'201','reason':'s','result':'0','message_id':'s','error_code':'0'}"
-json.loads(r0)
-print "-"*20
-json.loads(r1)
+aList = [123, 'xyz', 'fuck', 'abc', {"name":"a"}]
+bList={}
+bList['a']=aList
+# bList['b']="a"
 
-
-
-# aList = [123, 'xyz', 'fuck', 'abc', {"name":"a"}]
 #
 # a = aList.pop()
 # print a["name"]
@@ -51,3 +52,9 @@ json.loads(r1)
 # print aList.pop()
 # print aList.pop()
 
+a = json.dumps(aList)
+print a
+a = json.dumps(bList)
+print a
+a = MyWXBot.delete_bom(a)
+b = json.loads(a)

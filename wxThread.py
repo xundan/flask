@@ -3,9 +3,10 @@ import threading
 
 class DemoThread(threading.Thread):
     """use sub-class to run target function, which can be killed when parent thread is stop"""
-    def __init__(self, target_func, timeout=1.0, s_args=()):
+    def __init__(self, wx_id, target_func, timeout=1.0, s_args=()):
         super(DemoThread, self).__init__()
         self.stopped = False
+        self.wx_id = wx_id
         self.timeout = timeout
         self.target_func = target_func
         self.s_args = s_args
@@ -26,8 +27,8 @@ class DemoThread(threading.Thread):
     def is_stopped(self):
         return self.stopped
 
-    def get_name(self):
-        return self.name
+    def get_wx_id(self):
+        return self.wx_id
 
 
 class WxThreadCollection(object):
@@ -39,9 +40,9 @@ class WxThreadCollection(object):
         t.setDaemon(True)
         t.start()
 
-    def kill(self, name):
+    def kill(self, wx_id):
         for td in self.threads:
-            if td.get_name() == name:
+            if td.get_wx_id() == wx_id:
                 td.stop()
                 self.threads.remove(td)
                 break

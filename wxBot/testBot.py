@@ -42,12 +42,13 @@ class MyWXBot(WXBot):
                     print s, type(s)
                     if str(s) == 'None':
                         c_string = self.to_unicode('不匹配，转人工')
-                        self.post_chat_record(msg['content'], msg['user']['name'], 0)
+                        self.post_chat_record(msg['content'], msg['user']['name'], 0, "plain")
                         print '********[' + c_string + ']********'
                         # self.send_msg_by_uid(u'请您留下手机号', msg['user']['id'])
                     else:
                         print '--------[' + self.to_unicode('匹配') + ']--------'
                         self.post_cjkzy_msg(msg['content'], msg['user']['name'])
+                        self.post_chat_record(msg['content'], msg['user']['name'], 0, "msg")
                         self.send_msg_by_uid(u'您的消息我已收到', msg['user']['id'])
                 except UnicodeEncodeError:
                     print '    %s[Text] (illegal text).' % msg['user']['name']
@@ -136,14 +137,14 @@ class MyWXBot(WXBot):
         print '    | result: %s' % dic['result']
         print '    -----------------------------'
 
-    def post_chat_record(self, msg_content, user_name, isme=0):
+    def post_chat_record(self, msg_content, user_name, isme=0, t_type="plain"):
         url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/record'
         params = {
             "self_wx": self.wx_id,
             "client_name": user_name,
             "content": msg_content['data'],
             "isme": isme,
-            "type": "plain",
+            "type": t_type,
             "remark": "0"
         }
         r = self.session.post(url, data=json.dumps(params))
