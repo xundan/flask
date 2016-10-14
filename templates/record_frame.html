@@ -6,14 +6,18 @@
 </head>
 <body bgcolor="#f0f8ff">
 <h1>{{ get_flashed_messages()[0] }}</h1>
-{{ record.content }}
-<form class="input-group" action="/send/{{ record.self_wx }}/{{ record.client_name }}" method="post">
+{{ record.content|safe }}
+<form action="/send" method="post">
+    <label>
+        <input type="text" name="self_wx" value="{{ record.self_wx }}">
+    </label>
+    <label>
+        <input type="text" name="client_name" value="{{ record.client_name }}">
+    </label>
     <label>
         <input type="text" name="content">
     </label>
-    <span class="input-group-btn">
-        <button class="btn btn-primary" type="submit">发送</button>
-    </span>
-    </form>
+    <input type="submit" name="submit" value="Submit!">
+</form>
 </body>
 </html>

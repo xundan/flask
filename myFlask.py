@@ -11,7 +11,6 @@ from flask import request
 from flask import url_for, flash
 from models import Wx, ManualTodo, Record
 from wxBot.testBot import MyWXBot
-from wxBot.wxbot import SafeSession
 import time
 from wxThread import WxThreadCollection, DemoThread
 import json
@@ -19,6 +18,24 @@ import json
 app = Flask(__name__)
 app.secret_key = '123'
 ISO_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+WX_ID_NAME_DICT = {"cjkzy001": u"超级矿资源一圈",
+                   "cjkzy003": u"超级矿资源三圈",
+                   "cjkzy005": u"超级矿资源五圈",
+                   "cjkzy007": u"超级矿资源煤炭交易平台",
+                   "mgzdz456": u"超级矿资源非煤炭类交易平台",
+                   "cjkzywl": u"超级矿资源物流信息平台",
+                   "cjkzyshan": u"超级矿资源陕西物流",
+                   "cjkzy012": u"超级矿资源山西物流",
+                   "cjkzynmg": u"超级矿资源内蒙古物流",
+                   "cjkzyhb": u"超级矿资源京津冀物流",
+                   "cjkzyhn": u"超级矿资源河南物流",
+                   "cjkzysd": u"超级矿资源山东物流",
+                   "cjkzyjs": u"超级矿资源江苏安徽物流",
+                   "cjkzyhh": u"超级矿资源湖南湖北物流",
+                   "cjkzyxn": u"超级矿资源西南物流",
+                   "cjkzyxb": u"超级矿资源西北物流",
+                   "cjkzybgd": u"超级矿资源东北物流",
+                   "cjkzynf": u"超级矿资源南方物流", }
 
 
 @app.route('/')
@@ -29,8 +46,18 @@ def hello_world():
 @app.route('/monitor')
 def monitor():
     wxs = []
-    for i in range(1, 11):
-        wx = Wx('cjkzy' + str(i), 'cjkzy' + str(i), 'OK')
+    global THREAD_POOL, WX_ID_NAME_DICT
+    for k in WX_ID_NAME_DICT.keys():
+        living = "Dead"
+        for td in THREAD_POOL.threads:
+            if td.get_wx_id() == k:
+                if td.is_stopped():
+                    living = "Stopped"
+                    break
+                else:
+                    living = "Alive"
+                    break
+        wx = Wx(k, WX_ID_NAME_DICT[k], living)
         wxs.append(wx)
     return render_template('monitor.html', wxs=wxs)
 
@@ -66,6 +93,7 @@ def manual_service():
 def record_frame(self_wx, client_name):
     """show the record panel"""
     record = None
+    print "url code: "+client_name
     if self_wx is not None and client_name is not None:
         record = Record(self_wx=self_wx, client_name=client_name)
     else:
@@ -74,25 +102,35 @@ def record_frame(self_wx, client_name):
 
 
 def send_record(self_wx, client_name, content):
-    #  todo send message by pushing content&record.client into get_bot(record.wx_id).queue
     print "Now i am sending " + content + " from " + self_wx + " to " + client_name
-    pass
+    url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/record'
+    params = {
+        "self_wx": self_wx,
+        "client_name": client_name,
+        "content": content,
+        "isme": 1,
+        "type": "plain",
+        "remark": "0"
+    }
+    post_server(url=url, params=params)
 
 
 def delete_record(self_wx, client_name):
     #  todo set record invalid in sql
     print "Now I'm deleting " + self_wx + " to " + client_name
     pass
+ 
 
-
-@app.route('/send/<self_wx>/<client_name>', methods=['POST', ])
-def add(self_wx, client_name):
+@app.route('/send', methods=['POST', ])
+def send():
     """commit and show the record panel"""
     # record = None
+    form = request.form
+    self_wx = form.get('self_wx')
+    client_name = form.get('client_name')
+    content = form.get('content')
     if self_wx is None or client_name is None:
         abort(404)
-    form = request.form
-    content = form.get('content')
     if not content:
         flash("Manual deleted.")
         delete_record(self_wx, client_name)
@@ -127,15 +165,11 @@ def show(wx_id):
     return render_template("qr_png.html", png_path=png_path)
 
 
-@app.route('/show01')
-def show_png01():
-    thread = DemoThread(wx_id='cjkzy001', target_func=login_wx, s_args=('cjkzy001',))
+@app.route('/kill_thread/<wx_id>')
+def kill_thread(wx_id):
     global THREAD_POOL
-    THREAD_POOL.add(thread)
-    time.sleep(5)
-    png_path = url_for("static", filename="temp/wxqr.png")
-    print "They never come here." + png_path
-    return render_template("qr_png.html", png_path=png_path)
+    THREAD_POOL.kill(wx_id=wx_id)
+    return monitor()
 
 
 @app.errorhandler(404)

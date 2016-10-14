@@ -62,7 +62,7 @@ class MyWXBot(WXBot):
         msg2send = self.fetch_msg_to_send()
         if msg2send is not None:
             self.manual_list.append(msg2send)
-        time.sleep(2)
+        # time.sleep(2)
 
         if len(self.manual_list) > 0:
             message = self.manual_list.pop()
