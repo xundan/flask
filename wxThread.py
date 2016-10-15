@@ -5,6 +5,7 @@ import ctypes
 
 def _async_raise(tid, exctype):
     """Raises an exception in the threads with id tid"""
+    print "raise end: "+str(tid)+","+str(exctype)
     if not inspect.isclass(exctype):
         raise TypeError("Only types can be raised (not instances)")
     res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid,
@@ -108,7 +109,7 @@ class WxThreadCollection(object):
             if td.get_wx_id() == wx_id:
                 print "find ya!"
                 td.terminate()
-                td.join()
+                # td.join()
                 self.threads.remove(td)
                 break
 
