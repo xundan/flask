@@ -18,10 +18,25 @@ def _async_raise(tid, exctype):
         raise SystemError("PyThreadState_SetAsyncExc failed")
 
 
-class ThreadWithExc(threading.Thread):
-    """A thread class that supports raising exception in the thread from
-       another thread.
-    """
+class DemoThread(threading.Thread):
+    """use sub-class to run target function, which can be killed when parent thread is stop.
+    The sub-class run only when it is joint into parent's thread.
+    Problem is that when target_func is never stop, parent will never have chance to stop its son"""
+
+    def __init__(self, wx_id, target, args):
+        super(DemoThread, self).__init__(target=target, args=args)
+        self.stopped = False
+        self.wx_id = wx_id
+
+    def stop(self):
+        print "[DemoThread]set stopped in DemoThread"
+        self.stopped = True
+
+    def is_stopped(self):
+        return self.stopped
+
+    def get_wx_id(self):
+        return self.wx_id
 
     def _get_my_tid(self):
         """determines this (self's) thread id
@@ -47,7 +62,7 @@ class ThreadWithExc(threading.Thread):
 
         raise AssertionError("could not determine the thread's id")
 
-    def raiseExc(self, exctype):
+    def raise_exc(self, exctype):
         """Raises the given exception type in the context of this thread.
 
         If the thread is busy in a system call (time.sleep(),
@@ -72,41 +87,10 @@ class ThreadWithExc(threading.Thread):
         """
         _async_raise(self._get_my_tid(), exctype)
 
-
-class DemoThread(threading.Thread):
-    """use sub-class to run target function, which can be killed when parent thread is stop.
-    The sub-class run only when it is joint into parent's thread.
-    Problem is that when target_func is never stop, parent will never have chance to stop its son"""
-
-    def __init__(self, wx_id, target_func, timeout=2, s_args=()):
-        super(DemoThread, self).__init__()
-        self.stopped = False
-        self.wx_id = wx_id
-        self.timeout = timeout
-        self.target_func = target_func
-        self.s_args = s_args
-        self.sub_thread = ThreadWithExc(target=self.target_func, args=self.s_args)
-
-    def run(self):
-        self.sub_thread.setDaemon(True)
-        self.sub_thread.start()
-
-        while not self.stopped:
-            print self.wx_id + "[DemoThread]: i'm not stopped"
-            self.sub_thread.join(self.timeout)
-            print self.wx_id + "[DemoThread]: i'm time out."
-
-        print('Thread stopped')
-
-    def stop(self):
-        print "[DemoThread]set stopped in DemoThread"
-        self.stopped = True
-
-    def is_stopped(self):
-        return self.stopped
-
-    def get_wx_id(self):
-        return self.wx_id
+    def terminate(self):
+        """raises SystemExit in the context of the given thread, which should
+        cause the thread to exit silently (unless caught)"""
+        self.raise_exc(SystemExit)
 
 
 class WxThreadCollection(object):
@@ -123,9 +107,9 @@ class WxThreadCollection(object):
         for td in self.threads:
             if td.get_wx_id() == wx_id:
                 print "find ya!"
-                td.stop()
+                td.terminate()
+                td.join()
                 self.threads.remove(td)
-
                 break
 
 # def foo(name="default"):

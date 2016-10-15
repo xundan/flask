@@ -157,7 +157,7 @@ def show(wx_id):
             is_exist = True
             break
     if not is_exist:
-        thread = DemoThread(wx_id=wx_id, target_func=login_wx, s_args=(wx_id,))
+        thread = DemoThread(wx_id=wx_id, target=login_wx, args=(wx_id,))
         THREAD_POOL.add(thread)
         time.sleep(5)
     png_path = url_for("static", filename="temp/wxqr.png")
