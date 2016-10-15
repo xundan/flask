@@ -83,8 +83,8 @@ def manual_service():
         result = dic["result"]
         todos = []
         for manual in result:
-            todo = ManualTodo(manual["id"], manual['self_wx'], manual['self_wx'], manual['client_name']
-                              , manual['record_time'], manual['status'])
+            todo = ManualTodo(manual["id"], manual['self_wx'], WX_ID_NAME_DICT[manual['self_wx']],
+                              manual['client_name'], manual['record_time'], manual['status'])
             todos.append(todo)
         return render_template('manual_service.html', todos=todos)
 
