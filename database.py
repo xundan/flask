@@ -1,4 +1,4 @@
-from models import db, User, Record
+from models import db, Record
 db.create_all()
 # admin = User('admin1', 'admin1@example.com')
 # guest = User('guest', 'guest@example.com')
