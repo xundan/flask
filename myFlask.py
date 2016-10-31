@@ -179,7 +179,7 @@ def not_found(e):
 
 def post_server(url, params):
     r = requests.post(url, json=params)
-    print "return:" + MyWXBot.delete_bom(r.text)
+    # print "return:" + MyWXBot.delete_bom(r.text)
     return json.loads(MyWXBot.delete_bom(r.text))
 
 

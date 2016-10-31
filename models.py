@@ -49,7 +49,7 @@ class Record(object):
         dic = json.loads(MyWXBot.delete_bom(r.text))
         if dic['result_code'] == '201':
             return dic['result']
-        elif dic['reult_code'] == '202':
-            return "No more message."
+        elif dic['result_code'] == '202':
+            return "Self: No more message."
         else:
-            return "Internal Error."
+            return "Self: Internal Error."
