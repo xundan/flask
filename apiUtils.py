@@ -3,6 +3,7 @@ import requests
 
 
 def fetch_record_content(self_wx, client_name):
+    """Get all chat record of this two person: self_wx & client_name."""
     url = "http://www.kuaimei56.com/index.php/Views/ChatRecord/distinct_record"
     params = {
         "self_wx": self_wx,
@@ -18,6 +19,7 @@ def fetch_record_content(self_wx, client_name):
 
 
 def fetch_msg_to_send(wx_id):
+    """Fetch wx_id's message to be sent."""
     url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/unsent_record'
     params = {
         "self_wx": wx_id
@@ -43,6 +45,7 @@ def fetch_msg_to_send(wx_id):
 
 
 def update_chat_msg_sent(record_id):
+    """Mark the record as it had been sent."""
     url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/status'
     params = {
         "id": record_id,
@@ -60,6 +63,7 @@ def update_chat_msg_sent(record_id):
 
 
 def post_cjkzy_msg(wx_sender, msg_content, user_name):
+    """Post this message to database raw-table."""
     url = 'http://www.kuaimei56.com/index.php/Views/Raw/messages'
     params = {
         "content": msg_content['data'],
@@ -81,6 +85,9 @@ def post_cjkzy_msg(wx_sender, msg_content, user_name):
 
 
 def post_chat_record(wx_id, msg_content, user_name, isme=0, t_type="plain"):
+    """Add chat record.
+    If t_type is plain, this record need to be manual-handled.
+    If t_type is msg, this is a classic message, which will process in auto-flow."""
     url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/record'
     params = {
         # "self_wx": self.wx_id,
@@ -105,7 +112,8 @@ def post_chat_record(wx_id, msg_content, user_name, isme=0, t_type="plain"):
 
 
 def send_record(self_wx, client_name, content):
-    print "Now i am sending " + content + " from " + self_wx + " to " + client_name
+    """Post the message-to-be-sent into database, """
+    # print "Now i am sending " + content + " from " + self_wx + " to " + client_name
     url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/record'
     params = {
         "self_wx": self_wx,
@@ -119,6 +127,7 @@ def send_record(self_wx, client_name, content):
 
 
 def get_all_distinct_record(params):
+    """Get list of all distinct sessions to be manual-handled."""
     url = "http://www.kuaimei56.com/index.php/Views/ChatRecord/all_distinct_record"
     return post_server(url=url, params=params)
 
