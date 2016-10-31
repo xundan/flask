@@ -1,10 +1,6 @@
-import json
-
-import requests
+import apiUtils
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
-from wxBot.testBot import MyWXBot
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Admin123@localhost/db'
@@ -32,24 +28,8 @@ class Record(object):
     def __init__(self, self_wx, client_name):
         self.self_wx = self_wx
         self.client_name = client_name
-        self.content = self.fetch_content()
+        self.content = apiUtils.fetch_record_content(self_wx, client_name)
 
     def __repr__(self):
         return '<Record %r>' % self.content
 
-    def fetch_content(self):
-        url = "http://www.kuaimei56.com/index.php/Views/ChatRecord/distinct_record"
-        params = {
-            "self_wx": self.self_wx,
-            "client_name": self.client_name
-        }
-        print "Record.getContent params:"+json.dumps(params)
-        r = requests.post(url=url, json=params)
-        print "Record.getContent return:"+MyWXBot.delete_bom(r.text)
-        dic = json.loads(MyWXBot.delete_bom(r.text))
-        if dic['result_code'] == '201':
-            return dic['result']
-        elif dic['result_code'] == '202':
-            return "Self: No more message."
-        else:
-            return "Self: Internal Error."

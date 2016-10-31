@@ -3,7 +3,6 @@
 import ConfigParser
 import os
 
-import requests
 from flask import Flask
 from flask import abort
 from flask import render_template
@@ -11,7 +10,7 @@ from flask import request
 from flask import url_for, flash
 from models import Wx, ManualTodo, Record
 from wxBot.testBot import MyWXBot
-import time
+import apiUtils
 from wxThread import WxThreadCollection, DemoThread
 import json
 
@@ -65,7 +64,6 @@ def monitor():
 @app.route('/manual_service')
 def manual_service():
     manuals = []
-    url = "http://www.kuaimei56.com/index.php/Views/ChatRecord/all_distinct_record"
     global THREAD_POOL
     for td in THREAD_POOL.threads:
         if td.is_stopped() is not True:
@@ -74,7 +72,7 @@ def manual_service():
         "wx_list": manuals
     }
     print "params:" + json.dumps(params)
-    dic = post_server(url=url, params=params)
+    dic = apiUtils.get_all_distinct_record(params=params)
     if dic["result_code"] != "201":
         print "is not 201"
         return render_template('manual_service.html', todos=[])
@@ -101,20 +99,6 @@ def record_frame(self_wx, client_name):
     return render_template('record_frame.html', record=record)
 
 
-def send_record(self_wx, client_name, content):
-    print "Now i am sending " + content + " from " + self_wx + " to " + client_name
-    url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/record'
-    params = {
-        "self_wx": self_wx,
-        "client_name": client_name,
-        "content": content,
-        "isme": 1,
-        "type": "plain",
-        "remark": "0"
-    }
-    post_server(url=url, params=params)
-
-
 def delete_record(self_wx, client_name):
     #  todo set record invalid in sql
     print "Now I'm deleting " + self_wx + " to " + client_name
@@ -136,7 +120,7 @@ def send():
         delete_record(self_wx, client_name)
         return render_template("record_frame.html", record=Record(self_wx, client_name))
     else:
-        send_record(self_wx, client_name, content)
+        apiUtils.send_record(self_wx, client_name, content)
         return render_template("record_frame.html", record=Record(self_wx, client_name))
 
 
@@ -159,7 +143,7 @@ def show(wx_id):
     if not is_exist:
         thread = DemoThread(wx_id=wx_id, target=login_wx, args=(wx_id,))
         THREAD_POOL.add(thread)
-        time.sleep(5)
+        # time.sleep(2)
     png_path = url_for("static", filename="temp/wxqr.png")
     # print "They never come here." + png_path
     return render_template("qr_png.html", png_path=png_path)
@@ -175,12 +159,6 @@ def kill_thread(wx_id):
 @app.errorhandler(404)
 def not_found(e):
     return render_template("404.html")
-
-
-def post_server(url, params):
-    r = requests.post(url, json=params)
-    # print "return:" + MyWXBot.delete_bom(r.text)
-    return json.loads(MyWXBot.delete_bom(r.text))
 
 
 def init_wxbot_dict():
