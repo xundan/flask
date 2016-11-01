@@ -18,6 +18,18 @@ def fetch_record_content(self_wx, client_name):
         return "Self: Internal Error."
 
 
+def set_record_handled(self_wx, client_name):
+    """Get all chat record of this two person: self_wx & client_name."""
+    url = "http://www.kuaimei56.com/index.php/Views/ChatRecord/set_type"
+    params = {
+        "self_wx": self_wx,
+        "client_name": client_name,
+        "type": "handled"
+    }
+    dic = post_server(url=url, params=params)
+    return dic
+
+
 def fetch_msg_to_send(wx_id):
     """Fetch wx_id's message to be sent."""
     url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/unsent_record'

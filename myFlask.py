@@ -99,12 +99,6 @@ def record_frame(self_wx, client_name):
     return render_template('record_frame.html', record=record)
 
 
-def delete_record(self_wx, client_name):
-    #  todo set record invalid in sql
-    print "Now I'm deleting " + self_wx + " to " + client_name
-    pass
- 
-
 @app.route('/send', methods=['POST', ])
 def send():
     """commit and show the record panel"""
@@ -117,7 +111,7 @@ def send():
         abort(404)
     if not content:
         flash("Manual deleted.")
-        delete_record(self_wx, client_name)
+        apiUtils.set_record_handled(self_wx, client_name)
         return render_template("record_frame.html", record=Record(self_wx, client_name))
     else:
         apiUtils.send_record(self_wx, client_name, content)
