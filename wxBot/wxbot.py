@@ -61,6 +61,7 @@ class WXBot:
 
     def __init__(self, wx_id='default'):
         self.wx_id = wx_id
+        self.running = True
         self.DEBUG = False
         self.uuid = ''
         self.base_uri = ''
@@ -140,6 +141,9 @@ class WXBot:
 
     def get_img_path(self):
         return self.img_path
+
+    def set_running(self, is_running):
+        self.running = is_running
 
     def get_contact(self):
         """获取当前账户的所有相关账号(包括联系人、公众号、群聊、特殊账号)"""
@@ -626,7 +630,7 @@ class WXBot:
 
     def proc_msg(self):
         self.test_sync_check()
-        while True:
+        while self.running:
             check_time = time.time()
             try:
                 [retcode, selector] = self.sync_check()
@@ -672,6 +676,7 @@ class WXBot:
             check_time = time.time() - check_time
             if check_time < 0.8:
                 time.sleep(1 - check_time)
+        print "Now "+self.wx_id+" is quiting."
 
     def apply_useradd_requests(self, RecommendInfo):
         url = self.base_uri + '/webwxverifyuser?r=' + str(int(time.time())) + '&lang=zh_CN'

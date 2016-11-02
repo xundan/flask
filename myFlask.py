@@ -2,14 +2,12 @@
 # coding: utf-8
 import ConfigParser
 import os
-
 from flask import Flask
 from flask import abort
 from flask import render_template
 from flask import request
 from flask import url_for, flash
 from models import Wx, ManualTodo, Record
-from wxBot.testBot import MyWXBot
 import apiUtils
 from newThread import WxThreadCollection, DemoThread
 import json
@@ -118,13 +116,6 @@ def send():
         return render_template("record_frame.html", record=Record(self_wx, client_name))
 
 
-def login_wx(wx_id):
-    print "now start wxbot by flask with: " + wx_id
-    bot = MyWXBot(wx_id)
-    bot.DEBUG = True
-    bot.run()
-
-
 @app.route('/show/<wx_id>')
 def show(wx_id):
     """commit and show the record panel"""
@@ -135,7 +126,7 @@ def show(wx_id):
             is_exist = True
             break
     if not is_exist:
-        thread = DemoThread(wx_id=wx_id, target_func=login_wx, s_args=(wx_id,))
+        thread = DemoThread(wx_id=wx_id)
         THREAD_POOL.add(thread)
         # time.sleep(2)
     png_path = url_for("static", filename="temp/wxqr.png")
@@ -178,3 +169,4 @@ if __name__ == '__main__':
     app.run(localhost)
 
     # print "Thread is appending here."
+
