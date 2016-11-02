@@ -14,9 +14,9 @@
                                 <tr>
                                     <th>微信号</th>
                                     <th>登录</th>
+                                    <th>登出</th>
                                     <th>名称</th>
                                     <th>状态</th>
-{#                                    <th>登出</th>#}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -24,11 +24,11 @@
                                     <tr>
                                         <td>{{ wx.wx_id }}</td>
                                         <td><a href="/show/{{ wx.wx_id }}">登录</a>
+                                        <td><a href="/kill_thread/{{ wx.wx_id }}">退出</a>
+                                        </td>
                                         <td>{{ wx.wx_name }}</td>
                                         <td>{{ wx.wx_status }}</td>
                                         </td>
-{#                                        <td><a href="/kill_thread/{{ wx.wx_id }}">退出</a>#}
-{#                                        </td>#}
                                     </tr>
                                 {% endfor %}
                                 </tbody>
