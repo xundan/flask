@@ -12,27 +12,28 @@ import apiUtils
 from newThread import WxThreadCollection, DemoThread
 import json
 
+
 app = Flask(__name__)
 app.secret_key = '123'
 ISO_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
-WX_ID_NAME_DICT = {"cjkzy001": u"超级矿资源一圈",
-                   "cjkzy003": u"超级矿资源三圈",
-                   "cjkzy005": u"超级矿资源五圈",
-                   "cjkzy007": u"超级矿资源煤炭交易平台",
-                   "mgzdz456": u"超级矿资源非煤炭类交易平台",
-                   "cjkzywl": u"超级矿资源物流信息平台",
-                   "cjkzyshan": u"超级矿资源陕西物流",
-                   "cjkzy012": u"超级矿资源山西物流",
-                   "cjkzynmg": u"超级矿资源内蒙古物流",
-                   "cjkzyhb": u"超级矿资源京津冀物流",
-                   "cjkzyhn": u"超级矿资源河南物流",
-                   "cjkzysd": u"超级矿资源山东物流",
-                   "cjkzyjs": u"超级矿资源江苏安徽物流",
-                   "cjkzyhh": u"超级矿资源湖南湖北物流",
-                   "cjkzyxn": u"超级矿资源西南物流",
-                   "cjkzyxb": u"超级矿资源西北物流",
-                   "cjkzybgd": u"超级矿资源东北物流",
-                   "cjkzynf": u"超级矿资源南方物流", }
+WX_ID_NAME_DICT = {"cjkzy001": u"一圈",
+                   "cjkzy003": u"三圈",
+                   "cjkzy005": u"五圈",
+                   "cjkzy007": u"煤炭交易平台",
+                   "mgzdz456": u"非煤炭类交易平台",
+                   "cjkzywl": u"物流信息平台",
+                   "cjkzyshan": u"陕西",
+                   "cjkzy012": u"山西",
+                   "cjkzynmg": u"内蒙古",
+                   "cjkzyhb": u"京津冀",
+                   "cjkzyhn": u"河南",
+                   "cjkzysd": u"山东",
+                   "cjkzyjs": u"江苏安徽",
+                   "cjkzyhh": u"湖南湖北",
+                   "cjkzyxn": u"西南",
+                   "cjkzyxb": u"西北",
+                   "cjkzybgd": u"东北",
+                   "cjkzynf": u"南方", }
 
 
 @app.route('/')

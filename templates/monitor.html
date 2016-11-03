@@ -21,15 +21,27 @@
                                 </thead>
                                 <tbody>
                                 {% for wx in wxs %}
-                                    <tr>
-                                        <td>{{ wx.wx_id }}</td>
-                                        <td><a href="/show/{{ wx.wx_id }}">登录</a>
-                                        <td><a href="/kill_thread/{{ wx.wx_id }}">退出</a>
-                                        </td>
-                                        <td>{{ wx.wx_name }}</td>
-                                        <td>{{ wx.wx_status }}</td>
-                                        </td>
-                                    </tr>
+                                    {% if wx.wx_status == "Alive" %}
+                                        <tr class="info">
+                                            <td>{{ wx.wx_id }}</td>
+                                            <td><a href="/show/{{ wx.wx_id }}">登录</a>
+                                            <td><a href="/kill_thread/{{ wx.wx_id }}">退出</a>
+                                            </td>
+                                            <td>{{ wx.wx_name }}</td>
+                                            <td>{{ wx.wx_status }}</td>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr class="danger">
+                                            <td>{{ wx.wx_id }}</td>
+                                            <td><a href="/show/{{ wx.wx_id }}">登录</a>
+                                            <td><a href="/kill_thread/{{ wx.wx_id }}">退出</a>
+                                            </td>
+                                            <td>{{ wx.wx_name }}</td>
+                                            <td>{{ wx.wx_status }}</td>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
                                 {% endfor %}
                                 </tbody>
                             </table>
