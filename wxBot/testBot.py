@@ -37,25 +37,24 @@ class MyWXBot(WXBot):
             #     pass
             if '' + msg['user']['name'] != u'\u8d85\u7ea7\u77ff\u8d44\u6e90':
                 try:
-                    # TODO 提交给服务器
-                    s = re.match("[\s\S]*[0-9]{11}[\s\S]*", msg['content']['data'])
-                    print s, type(s)
-                    if str(s) == 'None':
+                    p = re.compile(r'[\s\S]*([0-9]{11})[\s\S]*')
+                    finds = p.findall(msg['content']['data'])
+                    if len(finds) == 0:
                         c_string = self.to_unicode('不匹配，转人工')
                         apiUtils.post_chat_record(self.wx_id, msg['content'], msg['user']['name'], 0, "plain")
                         print '********[' + c_string + ']********'
                         # self.send_msg_by_uid(u'请您留下手机号', msg['user']['id'])
                     else:
                         print '--------[' + self.to_unicode('匹配') + ']--------'
-                        apiUtils.post_cjkzy_msg(self.my_account['NickName'], msg['content'], msg['user']['name'])
+                        apiUtils.post_cjkzy_msg(self.wx_id, msg['content'], msg['user']['name'], finds[0])
                         apiUtils.post_chat_record(self.wx_id, msg['content'], msg['user']['name'], 0, "msg")
                         self.send_msg_by_uid(u'您的消息我已收到', msg['user']['id'])
                 except UnicodeEncodeError:
                     print '    %s[Text] (illegal text).' % msg['user']['name']
             else:
                 print '~~~~~~~~[' + self.to_unicode('自消息，已过滤') + ']~~~~~~~~'
-        if msg['msg_type_id'] == 3 and msg['content']['type'] == 0:
-            print '    (group-message): %s' % msg['content']['data']
+        # if msg['msg_type_id'] == 3 and msg['content']['type'] == 0:
+        #     print '    (group-message): %s' % msg['content']['data']
 
     def schedule(self):
         # here to append manual_list
@@ -68,8 +67,8 @@ class MyWXBot(WXBot):
             message = self.manual_list.pop()
             self.send_msg(message["name"], message["word"])
             apiUtils.update_chat_msg_sent(message["id"])
-        else:
-            print self.wx_id + " Nothing to send now."
+        # else:
+        #     print self.wx_id + " Nothing to send now."
 
 
 def main():

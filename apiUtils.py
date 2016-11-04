@@ -74,20 +74,22 @@ def update_chat_msg_sent(record_id):
     return dic
 
 
-def post_cjkzy_msg(wx_sender, msg_content, user_name):
+def post_cjkzy_msg(wx_sender, msg_content, user_name, owner_phone):
     """Post this message to database raw-table."""
     url = 'http://www.kuaimei56.com/index.php/Views/Raw/messages'
     params = {
         "content": msg_content['data'],
         "sender": user_name,
         # "wx_sender": self.my_account['NickName']
-        "wx_sender": wx_sender
+        "wx_sender": wx_sender,
+        "owner": owner_phone
     }
     dic = post_server(url=url, params=params)
     print '    [Response]'
     print '    -----------------------------'
     print '    | sender: %s' % user_name
     print '    | wx_sender: %s' % wx_sender
+    print '    | owner: %s' % owner_phone
     print '    | result_code: %s' % dic['result_code']
     print '    | reason: %s' % dic['reason']
     print '    | error_code: %s' % dic['error_code']
@@ -153,6 +155,7 @@ def post_server(url, params):
 def delete_bom(text):
     """delete the BOM at head of text(json), if it has one."""
     if text is not None:
+        # print "Text is " + text
         while text[0] != "{":
             text = text[1:]
     return text

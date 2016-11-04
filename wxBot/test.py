@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # coding: utf-8
 
-# from wxbot import *
+from wxbot import *
 #
 #
 # class MyWXBot(WXBot):
@@ -38,9 +38,9 @@ import json
 # json.loads(r1)
 from wxBot.testBot import MyWXBot
 
-aList = [123, 'xyz', 'fuck', 'abc', {"name":"a"}]
-bList={}
-bList['a']=aList
+# aList = [123, 'xyz', 'fuck', 'abc', {"name":"a"}]
+# bList={}
+# bList['a']=aList
 # bList['b']="a"
 
 #
@@ -52,9 +52,21 @@ bList['a']=aList
 # print aList.pop()
 # print aList.pop()
 
-a = json.dumps(aList)
-print a
-a = json.dumps(bList)
-print a
-a = MyWXBot.delete_bom(a)
-b = json.loads(a)
+# a = json.dumps(aList)
+# print a
+# a = json.dumps(bList)
+# print a
+# a = MyWXBot.delete_bom(a)
+# b = json.loads(a)
+
+
+# s = re.match("[\s\S]*[0-9]{11}[\s\S]*", u"a【】12341234123 aba")
+# print s, type(s)
+# if s is not None:
+#     print s.group()
+
+p = re.compile(r'[\s\S]*([0-9]{11})[\s\S]*')
+arr = p.findall(u"a【】12341234123 aba")
+print len(arr)
+arr2 = p.findall(u"a【】1234134123 aba")
+print len(arr2)
