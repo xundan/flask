@@ -56,6 +56,19 @@ class MyWXBot(WXBot):
         # if msg['msg_type_id'] == 3 and msg['content']['type'] == 0:
         #     print '    (group-message): %s' % msg['content']['data']
 
+        # 群消息
+        if msg['msg_type_id'] == 3 and msg['content']['type'] == 0:
+            try:
+                p = re.compile(r'[\s\S]*([0-9]{11})[\s\S]*')
+                finds = p.findall(msg['content']['data'])
+                if len(finds) == 0:
+                    print '--------[' + self.to_unicode('匹配') + ']--------'
+                    apiUtils.post_cjkzy_msg(self.wx_id, msg['content'], '[q]'+msg['user']['name'], finds[0])
+                    # apiUtils.post_chat_record(self.wx_id, msg['content'], msg['user']['name'], 0, "msg")
+                    # self.send_msg_by_uid(u'您的消息我已收到', msg['user']['id'])
+            except UnicodeEncodeError:
+                print '    %s[Text] (illegal text).' % msg['user']['name']
+
     def schedule(self):
         # here to append manual_list
         msg2send = apiUtils.fetch_msg_to_send(self.wx_id)
