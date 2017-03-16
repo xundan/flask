@@ -70,3 +70,5 @@ arr = p.findall(u"a【】12341234123 aba")
 print len(arr)
 arr2 = p.findall(u"a【】1234134123 aba")
 print len(arr2)
+
+print str('str')

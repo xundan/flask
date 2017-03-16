@@ -33,7 +33,13 @@ WX_ID_NAME_DICT = {"cjkzy001": u"一圈",
                    "cjkzyxn": u"西南",
                    "cjkzyxb": u"西北",
                    "cjkzybgd": u"东北",
-                   "cjkzynf": u"南方", }
+                   "cjkzynf": u"南方",
+                   "cjkzy006": u"六圈",
+                   "cjkzy008": u"八圈",
+                   "cjkzy009": u"九圈",
+                   "cjkzy010": u"十圈",
+                   "cjkzy011": u"十一圈",
+                   "cjkzysx": u"陕西", }
 
 
 @app.route('/')
