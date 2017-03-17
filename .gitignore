@@ -95,3 +95,4 @@ ENV/
 wxBot/temp/
 wxBot/*.txt
 static/temp/*
+test/TestDemo.py

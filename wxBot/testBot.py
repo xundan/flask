@@ -48,6 +48,7 @@ class MyWXBot(WXBot):
                         print '--------[' + self.to_unicode('匹配') + ']--------'
                         apiUtils.post_cjkzy_msg(self.wx_id, msg['content'], msg['user']['name'], finds[0])
                         apiUtils.post_chat_record(self.wx_id, msg['content'], msg['user']['name'], 0, "msg")
+                        time.sleep(2)
                         self.send_msg_by_uid(u'您的消息我已收到', msg['user']['id'])
                 except UnicodeEncodeError:
                     print '    %s[Text] (illegal text).' % msg['user']['name']
