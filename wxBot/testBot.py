@@ -49,7 +49,9 @@ class MyWXBot(WXBot):
                         apiUtils.post_cjkzy_msg(self.wx_id, msg['content'], msg['user']['name'], finds[0])
                         apiUtils.post_chat_record(self.wx_id, msg['content'], msg['user']['name'], 0, "msg")
                         time.sleep(2)
-                        self.send_msg_by_uid(u'您的消息我已收到', msg['user']['id'])
+                        # self.send_msg_by_uid(u'您的消息我已收到', msg['user']['id'])
+                        self.send_msg_by_uid(u'您好，您的消息已收到。请扫描下方二维码关注超级矿资源公众号，您可以发布、查看煤炭供求、找车信息，您还可以把我们的公众号推荐给您身边做煤炭的朋友，我们可以把您的信息做置顶发布。', msg['user']['id'])
+                        self.send_img_msg_by_uid(os.path.join(self.temp_pwd, 'cjkzy_mp.jpg'), msg['user']['id'])
                 except UnicodeEncodeError:
                     print '    %s[Text] (illegal text).' % msg['user']['name']
             else:
