@@ -12,9 +12,6 @@ import apiUtils
 from newThread import WxThreadCollection, DemoThread
 import json
 
-
-app = Flask(__name__)
-app.secret_key = '123'
 ISO_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 WX_ID_NAME_DICT = {"cjkzy001": u"一圈",
                    "cjkzy003": u"三圈",
@@ -39,7 +36,17 @@ WX_ID_NAME_DICT = {"cjkzy001": u"一圈",
                    "cjkzy009": u"九圈",
                    "cjkzy010": u"十圈",
                    "cjkzy011": u"十一圈",
-                   "cjkzysx": u"陕西", }
+                   "cjkzysx": u"陕西",}
+THREAD_POOL = None
+
+
+def init_wxbot_dict():
+    global THREAD_POOL
+    THREAD_POOL = WxThreadCollection()
+
+init_wxbot_dict()
+app = Flask(__name__)
+app.secret_key = '123'
 
 
 @app.route('/')
@@ -137,6 +144,7 @@ def show(wx_id):
         THREAD_POOL.add(thread)
         # time.sleep(2)
     png_path = url_for("static", filename="temp/wxqr.png")
+    # png_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static/temp/wxqr.png")
     # print "They never come here." + png_path
     return render_template("qr_png.html", png_path=png_path)
 
@@ -152,15 +160,7 @@ def kill_thread(wx_id):
 def not_found(e):
     return render_template("404.html")
 
-
-def init_wxbot_dict():
-    global THREAD_POOL
-    THREAD_POOL = WxThreadCollection()
-
-
-THREAD_POOL = None
 if __name__ == '__main__':
-    init_wxbot_dict()
 
     # Get host info from 'host.ini'
     config_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "host.ini")
