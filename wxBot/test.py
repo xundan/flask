@@ -65,10 +65,13 @@ from wxBot.testBot import MyWXBot
 # if s is not None:
 #     print s.group()
 
-p = re.compile(r'[\s\S]*([0-9]{11})[\s\S]*')
-arr = p.findall(u"a【】12341234123 aba")
-print len(arr)
-arr2 = p.findall(u"a【】1234134123 aba")
-print len(arr2)
+# p = re.compile(r'[\s\S]*([0-9]{11})[\s\S]*')
+# arr = p.findall(u"a【】12341234123 aba")
+# print len(arr)
+# arr2 = p.findall(u"a【】1234134123 aba")
+# print len(arr2)
+#
+# print str('str')
 
-print str('str')
+a = "123"
+print a[:2]
