@@ -33,6 +33,19 @@ class MyWXBot(WXBot):
                     self.send_msg_by_uid(u'您的消息我已收到', msg['user']['id'])
             except UnicodeEncodeError:
                 print '    %s[Text] (illegal text).' % msg['user']['name']
+            # 是否符合查询语句
+            try:
+                p = re.compile(r'$[012345查找求车]')
+                finds = p.findall(msg['content']['data'])
+                if len(finds) == 0:
+                    pass
+                else:
+                    print '--------[' + self.to_unicode('匹配') + ']--------'
+                    result = apiUtils.fetch_query_text(msg['content'], msg['user']['name'], self.wx_id)
+                    if result:
+                        self.send_msg_by_uid(self.to_unicode(result), msg['user']['id'])
+            except UnicodeEncodeError:
+                print '    %s[Text] (illegal text 2).' % msg['user']['name']
         # 群消息
         if msg['msg_type_id'] == 3 and msg['content']['type'] == 0:
             try:
@@ -41,10 +54,13 @@ class MyWXBot(WXBot):
                 if len(finds) == 0:
                     pass
                 else:
-                    print '--------[' + self.to_unicode('群匹配') + ']--------'
-                    apiUtils.post_cjkzy_msg(self.wx_id, msg['content'], '[q]'+msg['user']['name'], finds[0])
-                    # apiUtils.post_chat_record(self.wx_id, msg['content'], msg['user']['name'], 0, "msg")
-                    # self.send_msg_by_uid(u'您的消息我已收到', msg['user']['id'])
+                    if u'A 矿【转发信息】群'!=msg['user']['name']:
+                        print '--------[' + self.to_unicode('群匹配') + ']--------'
+                        apiUtils.post_cjkzy_msg(self.wx_id, msg['content'], '[q]'+msg['user']['name'], finds[0])
+                        # apiUtils.post_chat_record(self.wx_id, msg['content'], msg['user']['name'], 0, "msg")
+                        # self.send_msg_by_uid(u'您的消息我已收到', msg['user']['id'])
+                    else:
+                        print u'自己群消息'
             except UnicodeEncodeError:
                 print '    %s[Text] (illegal text).' % msg['user']['name']
 

@@ -2,6 +2,22 @@ import json
 import requests
 
 
+def fetch_query_text(kw, user, self):
+    """Get all chat record of this two person: self_wx & client_name."""
+    url = "http://www.kuaimei56.com/index.php/Views/QueryRest/q_text"
+    params = {
+        "kw": kw,
+        "user": user,
+        "self": self
+    }
+    dic = post_server(url=url, params=params)
+    if dic['result_code'] == '201':
+        return dic['result']
+    else:
+        # todo log this with Internal Error
+        return False
+
+
 def fetch_record_content(self_wx, client_name):
     """Get all chat record of this two person: self_wx & client_name."""
     url = "http://www.kuaimei56.com/index.php/Views/ChatRecord/distinct_record"
