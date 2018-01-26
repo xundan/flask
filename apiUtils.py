@@ -15,7 +15,7 @@ def fetch_query_text(kw, user, self):
         return dic['result']
     else:
         # todo log this with Internal Error
-        return False
+        return "false="+dic['result_code']
 
 
 def fetch_record_content(self_wx, client_name):
