@@ -36,8 +36,10 @@ WX_ID_NAME_DICT = {"cjkzy001": u"一圈",
                    "cjkzy009": u"九圈",
                    "cjkzy010": u"十圈",
                    "cjkzy011": u"十一圈",
+                   "cjkzy013": u"十三圈",
                    "cjkzysx": u"陕西",
-                   "vip": u"VIP",}
+                   "vip": u"VIP",
+                   "cjkzykf": u"客服",}
 THREAD_POOL = None
 
 

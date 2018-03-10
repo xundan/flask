@@ -74,20 +74,21 @@ def fetch_msg_to_send(wx_id):
 
 def update_chat_msg_sent(record_id):
     """Mark the record as it had been sent."""
-    url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/status'
-    params = {
-        "id": record_id,
-        "status": 1
-    }
-    dic = post_server(url=url, params=params)
-    print '    [Response]'
-    print '    -----------------------------'
-    print '    | result_code: %s' % dic['result_code']
-    print '    | reason: %s' % dic['reason']
-    print '    | error_code: %s' % dic['error_code']
-    print '    | result: %s' % dic['result']
-    print '    -----------------------------'
-    return dic
+    # url = 'http://www.kuaimei56.com/index.php/Views/ChatRecord/status'
+    # params = {
+    #     "id": record_id,
+    #     "status": 1
+    # }
+    # dic = post_server(url=url, params=params)
+    # print '    [Response]'
+    # print '    -----------------------------'
+    # print '    | result_code: %s' % dic['result_code']
+    # print '    | reason: %s' % dic['reason']
+    # print '    | error_code: %s' % dic['error_code']
+    # print '    | result: %s' % dic['result']
+    # print '    -----------------------------'
+    # return dic
+    pass
 
 
 def post_cjkzy_msg(wx_sender, msg_content, user_name, owner_phone):
